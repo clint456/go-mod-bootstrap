@@ -128,3 +128,9 @@ require (
 	google.golang.org/protobuf v1.36.12 // indirect
 	nhooyr.io/websocket v1.8.17 // indirect
 )
+
+replace github.com/edgexfoundry/go-mod-core-contracts/v4 => ../go-mod-core-contracts
+replace github.com/edgexfoundry/go-mod-messaging/v4 => ../go-mod-messaging
+replace github.com/edgexfoundry/go-mod-configuration/v4 => ../go-mod-configuration
+replace github.com/edgexfoundry/go-mod-registry/v4 => ../go-mod-registry
+replace github.com/edgexfoundry/go-mod-secrets/v4 => ../go-mod-secrets

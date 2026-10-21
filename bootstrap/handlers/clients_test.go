@@ -244,9 +244,9 @@ func TestClientsBootstrapHandler(t *testing.T) {
 			eventClient := container.EventClientFrom(dic.Get)
 			readingClient := container.ReadingClientFrom(dic.Get)
 			commandClient := container.CommandClientFrom(dic.Get)
-			deviceServiceClient := container.DeviceServiceClientFrom(dic.Get)
-			deviceProfileClient := container.DeviceProfileClientFrom(dic.Get)
-			deviceClient := container.DeviceClientFrom(dic.Get)
+			nodeServiceClient := container.NodeServiceClientFrom(dic.Get)
+			profileClient := container.ProfileClientFrom(dic.Get)
+			nodeClient := container.NodeClientFrom(dic.Get)
 			provisionWatcherClient := container.ProvisionWatcherClientFrom(dic.Get)
 			notificationClient := container.NotificationClientFrom(dic.Get)
 			subscriptionClient := container.SubscriptionClientFrom(dic.Get)
@@ -269,14 +269,14 @@ func TestClientsBootstrapHandler(t *testing.T) {
 			}
 
 			if test.MetadataClientInfo != nil {
-				assert.NotNil(t, deviceServiceClient)
-				assert.NotNil(t, deviceProfileClient)
-				assert.NotNil(t, deviceClient)
+				assert.NotNil(t, nodeServiceClient)
+				assert.NotNil(t, profileClient)
+				assert.NotNil(t, nodeClient)
 				assert.NotNil(t, provisionWatcherClient)
 			} else {
-				assert.Nil(t, deviceServiceClient)
-				assert.Nil(t, deviceProfileClient)
-				assert.Nil(t, deviceClient)
+				assert.Nil(t, nodeServiceClient)
+				assert.Nil(t, profileClient)
+				assert.Nil(t, nodeClient)
 				assert.Nil(t, provisionWatcherClient)
 			}
 

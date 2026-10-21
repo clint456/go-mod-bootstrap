@@ -43,7 +43,7 @@
 - Use go-mod-messaging updated `NewMessageEnvelope` functions ([689d11e…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/689d11e68f960c6c14ce082c34596ae70a65391e))
 - Pass a callback function to `WatchForChanges` method ([b6bb7df…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/b6bb7df54b72900fcda88764a7a262809c7ef0bc))
 - Enhance the authentication hook function to support external JWT ([7262530…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/72625307fddf58a71365790e5e0be9b42f7a78ae))
-- Remove unused DeviceServiceCallbackClient ([7b366ed…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/7b366ed6b72269b97670537de5a767f6419a1c50))
+- Remove unused NodeServiceCallbackClient ([7b366ed…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/7b366ed6b72269b97670537de5a767f6419a1c50))
 - Add new go build tag no_openziti to reduce build size ([#795](https://github.com/edgexfoundry/go-mod-bootstrap/issues/795)) ([84aca22…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/84aca22400148320c57e09313d7449f5f8115793))
 - Add EDGEX_USE_COMMON_APP_SERVICE_SECRET_KEY for service key overwrite ([f50d47c…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/f50d47cdb4fa0fe79d3d17d162436ddd25ceae0b))
 - Remove consul dependency ([f96ab66…](https://github.com/edgexfoundry/go-mod-bootstrap/commit/f96ab668d791aab77e23aaafed7abcc7644c67b4))
@@ -153,9 +153,9 @@ BREAKING CHANGE: Remove redis pub/sub
 - **metrics:** do not use shared DefaultRegistry and fix wg.Done call ([#543](https://github.com/edgexfoundry/go-mod-bootstrap/issues/543)) ([#4aa258a](https://github.com/edgexfoundry/go-mod-bootstrap/commits/4aa258a))
 
 ### Code Refactoring ♻
-- Rework SecretProvider interface so App/Device Services have limited API ([#d95cec14](https://github.com/edgexfoundry/go-mod-bootstrap/commit/d95cec14f58e3cd099609bcde1004459619ca645))
+- Rework SecretProvider interface so App/Node Services have limited API ([#d95cec14](https://github.com/edgexfoundry/go-mod-bootstrap/commit/d95cec14f58e3cd099609bcde1004459619ca645))
   ```text
-  BREAKING CHANGE: Services that need full SecretProvider API now use SecretProviderExt. Extra APIs have been removed for App/Device Services.
+  BREAKING CHANGE: Services that need full SecretProvider API now use SecretProviderExt. Extra APIs have been removed for App/Node Services.
   ```
 - Change Database timeout to a duration string ([#0c6b57a](https://github.com/edgexfoundry/go-mod-bootstrap/commit/0c6b57a37e828911869d3f8fcd99d2372771f96c))
   ```text
@@ -281,7 +281,7 @@ BREAKING CHANGE: Remove redis pub/sub
 - **v2:** Add overwrite capability for custom configuration ([#185](https://github.com/edgexfoundry/go-mod-bootstrap/issues/185)) ([#90b8a51](https://github.com/edgexfoundry/go-mod-bootstrap/commits/90b8a51))
 - **v2:** Add support for load/listen custom configuration ([#180](https://github.com/edgexfoundry/go-mod-bootstrap/issues/180)) ([#f277873](https://github.com/edgexfoundry/go-mod-bootstrap/commits/f277873))
 - **v2:** Add config client in DIC ([#178](https://github.com/edgexfoundry/go-mod-bootstrap/issues/178)) ([#ecde49d](https://github.com/edgexfoundry/go-mod-bootstrap/commits/ecde49d))
-- **v2:** Add helper to query DIC and returns the DeviceServiceCommandClient instance ([#162](https://github.com/edgexfoundry/go-mod-bootstrap/issues/162)) ([#c087e44](https://github.com/edgexfoundry/go-mod-bootstrap/commits/c087e44))
+- **v2:** Add helper to query DIC and returns the NodeServiceCommandClient instance ([#162](https://github.com/edgexfoundry/go-mod-bootstrap/issues/162)) ([#c087e44](https://github.com/edgexfoundry/go-mod-bootstrap/commits/c087e44))
 - **v2:** Create Helper functions to retrieve client library instances through DIC ([#158](https://github.com/edgexfoundry/go-mod-bootstrap/issues/158)) ([#3d89601](https://github.com/edgexfoundry/go-mod-bootstrap/commits/3d89601))
 ### Bug Fixes 🐛
 - Use /api/v2/ping for Registry healthchecks ([#196](https://github.com/edgexfoundry/go-mod-bootstrap/issues/196)) ([#7d55b1a](https://github.com/edgexfoundry/go-mod-bootstrap/commits/7d55b1a))

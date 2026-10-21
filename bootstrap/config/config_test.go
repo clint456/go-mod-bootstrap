@@ -141,7 +141,7 @@ func TestLoadCommonConfig(t *testing.T) {
 		},
 	}
 
-	deviceConfig := ConfigurationMockStruct{
+	nodeConfig := ConfigurationMockStruct{
 		Writable: WritableInfo{
 			Telemetry: config.TelemetryInfo{
 				Metrics: map[string]bool{"EventsSent": true, "ReadingsSent": true},
@@ -170,7 +170,7 @@ func TestLoadCommonConfig(t *testing.T) {
 			nil, true, []byte("true"), nil, nil, ""},
 		{"Valid - app service", &serviceConfig, config.ServiceTypeApp, &appConfig,
 			nil, true, []byte("true"), nil, nil, ""},
-		{"Valid - device service", &serviceConfig, config.ServiceTypeDevice, &deviceConfig,
+		{"Valid - node service", &serviceConfig, config.ServiceTypeNode, &nodeConfig,
 			nil, true, []byte("true"), nil, nil, ""},
 		{"Invalid - config provider not alive", &serviceConfig, config.ServiceTypeOther, nil,
 			nil, false, []byte("false"), nil, nil, configProviderErr},
@@ -217,7 +217,7 @@ func TestLoadCommonConfig(t *testing.T) {
 			if err == nil && ccReady {
 				providerClientMock.On("GetConfiguration", &serviceConfigMock).Return(tc.serviceConfig, tc.getConfigErr).Once()
 			}
-			if tc.serviceType == config.ServiceTypeApp || tc.serviceType == config.ServiceTypeDevice {
+			if tc.serviceType == config.ServiceTypeApp || tc.serviceType == config.ServiceTypeNode {
 				providerClientMock.On("GetConfiguration", &serviceConfigMock).Return(tc.serviceTypeConfig, tc.getConfigErr).Once()
 				var configKeys []string
 				switch tc.serviceType {
@@ -227,10 +227,10 @@ func TestLoadCommonConfig(t *testing.T) {
 						common.ConfigStemAll + "/core-common-config-bootstrapper/app-services/Writable/StoreAndForward/RetryInterval",
 						common.ConfigStemAll + "/core-common-config-bootstrapper/app-services/Writable/StoreAndForward/MaxRetryCount",
 					}
-				case config.ServiceTypeDevice:
+				case config.ServiceTypeNode:
 					configKeys = []string{
-						common.ConfigStemAll + "/core-common-config-bootstrapper/device-services/Writable/Telemetry/Metrics/EventsSent",
-						common.ConfigStemAll + "/core-common-config-bootstrapper/device-services/Writable/Telemetry/Metrics/ReadingsSent",
+						common.ConfigStemAll + "/core-common-config-bootstrapper/node-services/Writable/Telemetry/Metrics/EventsSent",
+						common.ConfigStemAll + "/core-common-config-bootstrapper/node-services/Writable/Telemetry/Metrics/ReadingsSent",
 					}
 				}
 
@@ -249,7 +249,7 @@ func TestLoadCommonConfig(t *testing.T) {
 					assert.True(t, serviceConfigMock.Writable.StoreAndForward.Enabled)
 					assert.NotEmpty(t, serviceConfigMock.Writable.StoreAndForward.RetryInterval)
 					assert.NotZero(t, serviceConfigMock.Writable.StoreAndForward.MaxRetryCount)
-				case config.ServiceTypeDevice:
+				case config.ServiceTypeNode:
 					assert.True(t, serviceConfigMock.Writable.Telemetry.Metrics["EventsSent"])
 					assert.True(t, serviceConfigMock.Writable.Telemetry.Metrics["ReadingsSent"])
 				}
@@ -270,11 +270,11 @@ func TestLoadCommonConfigFromFile(t *testing.T) {
 	}{
 		{"Valid - core service", path.Join(".", "testdata", "configuration.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeOther, ""},
 		{"Valid - app service", path.Join(".", "testdata", "configuration.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeApp, ""},
-		{"Valid - device service", path.Join(".", "testdata", "configuration.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeDevice, ""},
+		{"Valid - node service", path.Join(".", "testdata", "configuration.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeNode, ""},
 		{"Invalid - bad config file", path.Join(".", "testdata", "bad_config.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeOther, "no such file or directory"},
 		{"Invalid - missing all service", path.Join(".", "testdata", "bogus.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeOther, "could not find all-services section in common config"},
 		{"Invalid - missing app service", path.Join(".", "testdata", "all-service-config.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeApp, fmt.Sprintf("could not find %s section in common config", appServicesKey)},
-		{"Invalid - missing device service", path.Join(".", "testdata", "all-service-config.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeDevice, fmt.Sprintf("could not find %s section in common config", deviceServicesKey)},
+		{"Invalid - missing node service", path.Join(".", "testdata", "all-service-config.yaml"), &ConfigurationMockStruct{}, config.ServiceTypeNode, fmt.Sprintf("could not find %s section in common config", nodeServicesKey)},
 	}
 
 	for _, tc := range tests {

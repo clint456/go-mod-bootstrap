@@ -97,7 +97,7 @@ app-services:
     Type: "edgex-messagebus"
     SubscribeTopics: "events/#" # Base topic is prepended to this topic when using edgex-messagebus
 
-device-services:
+node-services:
   MaxEventSize: 0 # value 0 represents unlimited  maximum event size that can be sent to message bus or core-data
   Writable:
     Reading:
@@ -111,13 +111,13 @@ device-services:
       Protocol: "http"
       Host: "localhost"
       Port: 59881
-  Device:
+  Node:
     DataTransform: true
     MaxCmdOps: 128
     MaxCmdValueLen: 256
     ProfilesDir: "./res/profiles"
-    DevicesDir: "./res/devices"
-    # ProvisionWatchersDir is omitted here since most Device Services don't use it.
+    NodesDir: "./res/nodes"
+    # ProvisionWatchersDir is omitted here since most Node Services don't use it.
     # Those that do will have it in their private config
     EnableAsyncReadings: true
     AsyncBufferSize: 16

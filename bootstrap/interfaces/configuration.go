@@ -39,7 +39,7 @@ type WritableConfig interface {
 // Configuration interface provides an abstraction around a configuration struct.
 type Configuration interface {
 	// These two interfaces have been separated out for use in the custom configuration capability for
-	// App and Device services
+	// App and Node services
 	UpdatableConfig
 	WritableConfig
 

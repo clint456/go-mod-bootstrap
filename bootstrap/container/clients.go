@@ -83,40 +83,40 @@ func SubscriptionClientFrom(get di.Get) interfaces.SubscriptionClient {
 	return get(SubscriptionClientName).(interfaces.SubscriptionClient)
 }
 
-// DeviceServiceClientName contains the name of the DeviceServiceClient's implementation in the DIC.
-var DeviceServiceClientName = di.TypeInstanceToName((*interfaces.DeviceServiceClient)(nil))
+// NodeServiceClientName contains the name of the NodeServiceClient's implementation in the DIC.
+var NodeServiceClientName = di.TypeInstanceToName((*interfaces.NodeServiceClient)(nil))
 
-// DeviceServiceClientFrom helper function queries the DIC and returns the DeviceServiceClient's implementation.
-func DeviceServiceClientFrom(get di.Get) interfaces.DeviceServiceClient {
-	if get(DeviceServiceClientName) == nil {
+// NodeServiceClientFrom helper function queries the DIC and returns the NodeServiceClient's implementation.
+func NodeServiceClientFrom(get di.Get) interfaces.NodeServiceClient {
+	if get(NodeServiceClientName) == nil {
 		return nil
 	}
 
-	return get(DeviceServiceClientName).(interfaces.DeviceServiceClient)
+	return get(NodeServiceClientName).(interfaces.NodeServiceClient)
 }
 
-// DeviceProfileClientName contains the name of the DeviceProfileClient's implementation in the DIC.
-var DeviceProfileClientName = di.TypeInstanceToName((*interfaces.DeviceProfileClient)(nil))
+// ProfileClientName contains the name of the ProfileClient's implementation in the DIC.
+var ProfileClientName = di.TypeInstanceToName((*interfaces.ProfileClient)(nil))
 
-// DeviceProfileClientFrom helper function queries the DIC and returns the DeviceProfileClient's implementation.
-func DeviceProfileClientFrom(get di.Get) interfaces.DeviceProfileClient {
-	if get(DeviceProfileClientName) == nil {
+// ProfileClientFrom helper function queries the DIC and returns the ProfileClient's implementation.
+func ProfileClientFrom(get di.Get) interfaces.ProfileClient {
+	if get(ProfileClientName) == nil {
 		return nil
 	}
 
-	return get(DeviceProfileClientName).(interfaces.DeviceProfileClient)
+	return get(ProfileClientName).(interfaces.ProfileClient)
 }
 
-// DeviceClientName contains the name of the DeviceClient's implementation in the DIC.
-var DeviceClientName = di.TypeInstanceToName((*interfaces.DeviceClient)(nil))
+// NodeClientName contains the name of the NodeClient's implementation in the DIC.
+var NodeClientName = di.TypeInstanceToName((*interfaces.NodeClient)(nil))
 
-// DeviceClientFrom helper function queries the DIC and returns the DeviceClient's implementation.
-func DeviceClientFrom(get di.Get) interfaces.DeviceClient {
-	if get(DeviceClientName) == nil {
+// NodeClientFrom helper function queries the DIC and returns the NodeClient's implementation.
+func NodeClientFrom(get di.Get) interfaces.NodeClient {
+	if get(NodeClientName) == nil {
 		return nil
 	}
 
-	return get(DeviceClientName).(interfaces.DeviceClient)
+	return get(NodeClientName).(interfaces.NodeClient)
 }
 
 // ProvisionWatcherClientName contains the name of the ProvisionWatcherClient's implementation in the DIC.
@@ -131,12 +131,12 @@ func ProvisionWatcherClientFrom(get di.Get) interfaces.ProvisionWatcherClient {
 	return get(ProvisionWatcherClientName).(interfaces.ProvisionWatcherClient)
 }
 
-// DeviceServiceCommandClientName contains the name of the DeviceServiceCommandClient instance in the DIC.
-var DeviceServiceCommandClientName = di.TypeInstanceToName((*interfaces.DeviceServiceCommandClient)(nil))
+// NodeServiceCommandClientName contains the name of the NodeServiceCommandClient instance in the DIC.
+var NodeServiceCommandClientName = di.TypeInstanceToName((*interfaces.NodeServiceCommandClient)(nil))
 
-// DeviceServiceCommandClientFrom helper function queries the DIC and returns the DeviceServiceCommandClient instance.
-func DeviceServiceCommandClientFrom(get di.Get) interfaces.DeviceServiceCommandClient {
-	client, ok := get(DeviceServiceCommandClientName).(interfaces.DeviceServiceCommandClient)
+// NodeServiceCommandClientFrom helper function queries the DIC and returns the NodeServiceCommandClient instance.
+func NodeServiceCommandClientFrom(get di.Get) interfaces.NodeServiceCommandClient {
+	client, ok := get(NodeServiceCommandClientName).(interfaces.NodeServiceCommandClient)
 	if !ok {
 		return nil
 	}

@@ -104,14 +104,14 @@ func (cb *ClientsBootstrap) BootstrapHandler(
 				})
 			case common.CoreMetaDataServiceKey:
 				dic.Update(di.ServiceConstructorMap{
-					container.DeviceClientName: func(get di.Get) interface{} {
-						return httpClients.NewDeviceClientWithUrlCallback(urlFunc, jwtSecretProvider, cfg.GetBootstrap().Service.EnableNameFieldEscape)
+					container.NodeClientName: func(get di.Get) interface{} {
+						return httpClients.NewNodeClientWithUrlCallback(urlFunc, jwtSecretProvider, cfg.GetBootstrap().Service.EnableNameFieldEscape)
 					},
-					container.DeviceServiceClientName: func(get di.Get) interface{} {
-						return httpClients.NewDeviceServiceClientWithUrlCallback(urlFunc, jwtSecretProvider, cfg.GetBootstrap().Service.EnableNameFieldEscape)
+					container.NodeServiceClientName: func(get di.Get) interface{} {
+						return httpClients.NewNodeServiceClientWithUrlCallback(urlFunc, jwtSecretProvider, cfg.GetBootstrap().Service.EnableNameFieldEscape)
 					},
-					container.DeviceProfileClientName: func(get di.Get) interface{} {
-						return httpClients.NewDeviceProfileClientWithUrlCallback(urlFunc, jwtSecretProvider, cfg.GetBootstrap().Service.EnableNameFieldEscape)
+					container.ProfileClientName: func(get di.Get) interface{} {
+						return httpClients.NewProfileClientWithUrlCallback(urlFunc, jwtSecretProvider, cfg.GetBootstrap().Service.EnableNameFieldEscape)
 					},
 					container.ProvisionWatcherClientName: func(get di.Get) interface{} {
 						return httpClients.NewProvisionWatcherClientWithUrlCallback(urlFunc, jwtSecretProvider, cfg.GetBootstrap().Service.EnableNameFieldEscape)

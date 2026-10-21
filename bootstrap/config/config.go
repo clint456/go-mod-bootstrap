@@ -60,9 +60,9 @@ const (
 	secretNameKey      = "SecretName"
 	secretDataKey      = "SecretData"
 
-	allServicesKey    = "all-services"
-	appServicesKey    = "app-services"
-	deviceServicesKey = "device-services"
+	allServicesKey  = "all-services"
+	appServicesKey  = "app-services"
+	nodeServicesKey = "node-services"
 
 	SecurityModeKey = "Mode"
 )
@@ -85,7 +85,7 @@ type Processor struct {
 	providerHasConfig   bool
 	commonConfigClient  configuration.Client
 	appConfigClient     configuration.Client
-	deviceConfigClient  configuration.Client
+	nodeConfigClient    configuration.Client
 	privateConfigClient configuration.Client
 }
 
@@ -212,7 +212,7 @@ func (cp *Processor) Process(
 		config := serviceConfig.GetBootstrap()
 
 		if config.Service != nil {
-			// These are needed so the Service can receive HTTP calls from services running in Docker, like Core Command to Device Service
+			// These are needed so the Service can receive HTTP calls from services running in Docker, like Core Command to Node Service
 			config.Service.Host = getLocalIP()
 			config.Service.ServerBindAddr = "0.0.0.0"
 		}
@@ -265,7 +265,7 @@ func (cp *Processor) loadConfigByProvider(
 	}
 
 	// TODO: figure out what uses the dic - this will not have the common config info!!
-	// is this potentially custom config for app/device services?
+	// is this potentially custom config for app/node services?
 	cp.dic.Update(di.ServiceConstructorMap{
 		container.ConfigClientInterfaceName: func(get di.Get) any {
 			return cp.privateConfigClient
@@ -332,9 +332,9 @@ func (cp *Processor) loadConfigByProvider(
 		cp.listenForCommonChanges(serviceConfig, cp.appConfigClient, cp.privateConfigClient, utils.BuildBaseKey(configStem, common.CoreCommonConfigServiceKey, appServicesKey))
 		cp.lc.Infof("listening for application service common config changes")
 	}
-	if cp.deviceConfigClient != nil {
-		cp.listenForCommonChanges(serviceConfig, cp.deviceConfigClient, cp.privateConfigClient, utils.BuildBaseKey(configStem, common.CoreCommonConfigServiceKey, deviceServicesKey))
-		cp.lc.Infof("listening for device service common config changes")
+	if cp.nodeConfigClient != nil {
+		cp.listenForCommonChanges(serviceConfig, cp.nodeConfigClient, cp.privateConfigClient, utils.BuildBaseKey(configStem, common.CoreCommonConfigServiceKey, nodeServicesKey))
+		cp.lc.Infof("listening for node service common config changes")
 	}
 	return nil
 }
@@ -439,7 +439,7 @@ type createProviderCallback func(
 
 // loadCommonConfig will pull up to two separate common configs from the config provider
 // - serviceConfig: all services section of the common config
-// - serviceTypeConfig: if the service is an app or device service, this will have the type specific common config
+// - serviceTypeConfig: if the service is an app or node service, this will have the type specific common config
 // if there are separate configs, these will get merged into the serviceConfig
 func (cp *Processor) loadCommonConfig(
 	configStem string,
@@ -489,27 +489,27 @@ func (cp *Processor) loadCommonConfig(
 		}
 		serviceTypeConfigKeys, err = cp.appConfigClient.GetConfigurationKeys("")
 		if err != nil {
-			return fmt.Errorf("failed to load the common configuration keys for %s: %s", deviceServicesKey, err.Error())
+			return fmt.Errorf("failed to load the common configuration keys for %s: %s", nodeServicesKey, err.Error())
 		}
 
-	case config.ServiceTypeDevice:
-		serviceTypeSectionKey = utils.BuildBaseKey(common.CoreCommonConfigServiceKey, deviceServicesKey)
+	case config.ServiceTypeNode:
+		serviceTypeSectionKey = utils.BuildBaseKey(common.CoreCommonConfigServiceKey, nodeServicesKey)
 		cp.lc.Infof("loading the common configuration for service type %s", serviceType)
 		serviceTypeConfig, err = copyConfigurationStruct(serviceConfig)
 		if err != nil {
-			return fmt.Errorf("failed to copy the configuration structure for %s: %s", deviceServicesKey, err.Error())
+			return fmt.Errorf("failed to copy the configuration structure for %s: %s", nodeServicesKey, err.Error())
 		}
-		cp.deviceConfigClient, err = createProvider(cp.lc, serviceTypeSectionKey, configStem, configProviderInfo.ServiceConfig())
+		cp.nodeConfigClient, err = createProvider(cp.lc, serviceTypeSectionKey, configStem, configProviderInfo.ServiceConfig())
 		if err != nil {
-			return fmt.Errorf("failed to create provider for %s: %s", deviceServicesKey, err.Error())
+			return fmt.Errorf("failed to create provider for %s: %s", nodeServicesKey, err.Error())
 		}
-		err = cp.loadConfigFromProvider(serviceTypeConfig, cp.deviceConfigClient)
+		err = cp.loadConfigFromProvider(serviceTypeConfig, cp.nodeConfigClient)
 		if err != nil {
-			return fmt.Errorf("failed to load the common configuration for %s: %s", deviceServicesKey, err.Error())
+			return fmt.Errorf("failed to load the common configuration for %s: %s", nodeServicesKey, err.Error())
 		}
-		serviceTypeConfigKeys, err = cp.deviceConfigClient.GetConfigurationKeys("")
+		serviceTypeConfigKeys, err = cp.nodeConfigClient.GetConfigurationKeys("")
 		if err != nil {
-			return fmt.Errorf("failed to load the common configuration keys for %s: %s", deviceServicesKey, err.Error())
+			return fmt.Errorf("failed to load the common configuration keys for %s: %s", nodeServicesKey, err.Error())
 		}
 
 	default:
@@ -559,17 +559,17 @@ func (cp *Processor) loadCommonConfigFromFile(
 		if !ok {
 			return fmt.Errorf("could not find %s section in common config %s", appServicesKey, configFile)
 		}
-	case config.ServiceTypeDevice:
+	case config.ServiceTypeNode:
 		cp.lc.Infof("loading the common configuration for service type %s", serviceType)
-		serviceTypeConfig, ok = commonConfig[deviceServicesKey].(map[string]any)
+		serviceTypeConfig, ok = commonConfig[nodeServicesKey].(map[string]any)
 		if !ok {
-			return fmt.Errorf("could not find %s section in common config %s", deviceServicesKey, configFile)
+			return fmt.Errorf("could not find %s section in common config %s", nodeServicesKey, configFile)
 		}
 	default:
 		// this case is covered by the initial call to get the common config for all-services
 	}
 
-	if serviceType == config.ServiceTypeApp || serviceType == config.ServiceTypeDevice {
+	if serviceType == config.ServiceTypeApp || serviceType == config.ServiceTypeNode {
 		utils.MergeMaps(allServicesConfig, serviceTypeConfig)
 	}
 
@@ -582,7 +582,7 @@ func (cp *Processor) loadCommonConfigFromFile(
 
 // LoadCustomConfigSection loads the specified custom configuration section from file or Configuration provider.
 // Section will be seed if Configuration provider does yet have it. This is used for structures custom configuration
-// in App and Device services
+// in App and Node services
 func (cp *Processor) LoadCustomConfigSection(updatableConfig interfaces.UpdatableConfig, sectionName string) error {
 	if cp.envVars == nil {
 		cp.envVars = environment.NewVariables(cp.lc)
@@ -904,18 +904,18 @@ func (cp *Processor) listenForCommonChanges(fullServiceConfig interfaces.Configu
 func (cp *Processor) processCommonConfigChange(fullServiceConfig interfaces.Configuration, previousCommonWritable any, raw any, privateConfigClient configuration.Client, configClient configuration.Client) error {
 	changedKey, found := cp.findChangedKey(previousCommonWritable, raw)
 	if found {
-		// Only need to check App/Device writable if change was made to the all-services writable
+		// Only need to check App/Node writable if change was made to the all-services writable
 		if configClient == cp.commonConfigClient {
-			// check if changed value (from all-services) is an App or Device common override
+			// check if changed value (from all-services) is an App or Node common override
 			otherConfigClient := cp.appConfigClient
 			if otherConfigClient == nil {
-				otherConfigClient = cp.deviceConfigClient
+				otherConfigClient = cp.nodeConfigClient
 			}
 
 			// This case should not happen at this point, but need to guard against nil pointer
 			if otherConfigClient != nil {
 				if cp.isKeyInConfig(otherConfigClient, changedKey) {
-					cp.lc.Warnf("ignoring changed writable key %s overwritten in App or Device common writable", changedKey)
+					cp.lc.Warnf("ignoring changed writable key %s overwritten in App or Node common writable", changedKey)
 					return nil
 				}
 			}
@@ -983,10 +983,10 @@ func (cp *Processor) applyWritableUpdates(serviceConfig interfaces.Configuration
 		return
 	}
 
-	if cp.deviceConfigClient != nil {
-		err = cp.loadConfigFromProvider(serviceConfigCopy, cp.deviceConfigClient)
+	if cp.nodeConfigClient != nil {
+		err = cp.loadConfigFromProvider(serviceConfigCopy, cp.nodeConfigClient)
 		if err != nil {
-			lc.Errorf("failed to load device service common configuration: %v", err)
+			lc.Errorf("failed to load node service common configuration: %v", err)
 			return
 		}
 	}
